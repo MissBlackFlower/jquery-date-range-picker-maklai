@@ -1626,6 +1626,7 @@
         function dayHovering(day) {
             var hoverTime = parseInt(day.attr('time'));
             var tooltip = '';
+	        var selectedBefore = false;
 
             if (day.hasClass('has-tooltip') && day.attr('data-tooltip')) {
                 tooltip = '<span class="tooltip-content">' + day.attr('data-tooltip') + '</span>';
@@ -1653,6 +1654,9 @@
                             )
                         ) {
                             $(this).addClass('hovering');
+	                        if (opt.start > time && hoverTime <= time) {
+		                        selectedBefore = true;
+	                        }
                         } else {
                             $(this).removeClass('hovering');
                         }
@@ -1660,6 +1664,15 @@
 
                     if (opt.start && !opt.end) {
                         var days = countDays(hoverTime, opt.start);
+	                    if (days > 1) {
+		                    $(self).trigger('datepicker-start-hovering', {
+			                    'hoverDate': moment(hoverTime).format('YYYY-MM-DD'),
+			                    'selectedDate': moment(opt.start).format('YYYY-MM-DD'),
+			                    'days': days,
+			                    'nights': days - 1,
+			                    'selectedBefore' : selectedBefore
+		                    });
+	                    }
                         if (opt.hoveringTooltip) {
                             if (typeof opt.hoveringTooltip == 'function') {
                                 tooltip = opt.hoveringTooltip(days, opt.start, hoverTime);
@@ -2088,6 +2101,9 @@
                 if (opt.singleDate) {
                     clearHovering();
                 }
+	            $(self).trigger('datepicker-end-hovering', {
+		            relatedTarget: box
+	            });
             });
 
             box.find('.week-number').off("click").click(function(evt) {
@@ -2594,6 +2610,9 @@
         function outsideClickClose(evt) {
             if (!IsOwnDatePickerClicked(evt, self[0])) {
                 if (box.is(':visible')) closeDatePicker();
+	            $(self).trigger('datepicker-outside-click', {
+		            relatedTarget: box
+	            });
             }
         }
 

@@ -1,4 +1,5 @@
 # jQuery Date Range Picker Plugin
+# Will be modified for hotel reservation system.
 
 [![CDNJS](https://img.shields.io/cdnjs/v/jquery-date-range-picker.svg)](https://cdnjs.com/libraries/jquery-date-range-picker)
 [![Bower Version](https://img.shields.io/bower/v/jquery-date-range-picker.svg?maxAge=3600)]()
@@ -15,36 +16,6 @@ jQuery Date Range Picker is a jQuery plugin that allows a user to select a date 
 Documentation and demonstrations can be found here: https://longbill.github.io/jquery-date-range-picker
 
 ![screenshot](https://raw.github.com/longbill/jquery-date-range-picker/master/preview.jpg)
-
-## Setup on development machine
-* Install node.js [Ubuntu/Mac](https://github.com/creationix/nvm) , [Windows](https://nodejs.org/en/download/)
-* Update npm to latest version
-```
-npm install -g npm
-```
-* Install gulp v3.9.1 (global install)
-```
-npm install -g gulp@3.9.1
-```
-* Clone this project
-```
-git clone https://github.com/longbill/jquery-date-range-picker.git
-cd jquery-date-range-picker
-```
-* Install local dependencies
-```
-npm install
-```
-* Generate new minified (dist) files by reading from the `src` folder
-```
-gulp
-```
-
-* Build and tag a new version using [`npm version` command](https://docs.npmjs.com/cli/version) according to [Semantic Versioning](https://semver.org) best practices.
-
-```
-npm version <patch|minor|major>
-```
 
 ## Change log
 * See [changelog](CHANGELOG.md)
