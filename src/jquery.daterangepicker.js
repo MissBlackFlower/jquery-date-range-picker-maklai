@@ -1325,7 +1325,7 @@
                     });
                 });
             } else {
-                box.slideDown(animationTime, function() {
+                box.stop().slideDown(animationTime, function() {
                     $(self).trigger('datepicker-opened', {
                         relatedTarget: box
                     });
@@ -2160,7 +2160,7 @@
             if (opt.customCloseAnimation) {
                 opt.customCloseAnimation.call(box.get(0), afterAnim);
             } else {
-                $(box).slideUp(opt.duration, afterAnim);
+                $(box).stop().slideUp(opt.duration, afterAnim);
             }
             $(self).trigger('datepicker-close', {
                 relatedTarget: box
