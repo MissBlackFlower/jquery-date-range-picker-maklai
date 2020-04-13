@@ -2204,7 +2204,7 @@
             html += '">';
 
 	        if (opt.customHeader) {
-		        html += '<div class="custom-header js-custom-header' + opt.customHeader + '</div>';
+		        html += '<div class="custom-header js-custom-header">' + opt.customHeader + '</div>';
 	        }
 
             if (opt.showTopbar) {
@@ -2356,7 +2356,7 @@
 	        if (opt.showShortcuts || opt.showCustomValues) html +='</div>';
 
 	        if (opt.customFooter) {
-		        html += '<div class="custom-footer js-custom-footer' + opt.customFooter + '</div>';
+		        html += '<div class="custom-footer js-custom-footer">' + opt.customFooter + '</div>';
 	        }
 
 	        // date-picker-wrapper

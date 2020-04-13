@@ -1,7 +1,7 @@
 {
   "name": "jquery-date-range-picker-maklai",
   "description": "jQuery Date Range Picker is a jQuery plugin that allows user to select a date range. Modification for hotel booking system",
-  "version": "2.0.0",
+  "version": "2.0.1",
   "license": "MIT",
   "main": "src/jquery.daterangepicker.js",
   "keywords": [
