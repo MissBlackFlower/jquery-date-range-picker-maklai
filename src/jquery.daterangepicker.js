@@ -928,6 +928,8 @@
             customCloseAnimation: null,
             customArrowPrevSymbol: null,
             customArrowNextSymbol: null,
+	        customHeader: null,
+	        customFooter: null,
             monthSelect: false,
             yearSelect: false
         }, opt);
@@ -1098,7 +1100,6 @@
 
 
             setTimeout(function() {
-                updateCalendarWidth();
                 initiated = true;
             }, 0);
 
@@ -1117,7 +1118,7 @@
             });
 
             function gotoNextMonth(self) {
-                var isMonth2 = $(self).parents('table').hasClass('month2');
+                var isMonth2 = $(self).parents('.js-month').hasClass('month2');
                 var month = isMonth2 ? opt.month2 : opt.month1;
                 month = nextMonth(month);
                 if (!opt.singleMonth && !opt.singleDate && !isMonth2 && compare_month(month, opt.month2) >= 0 || isMonthOutOfBounds(month)) return;
@@ -1144,7 +1145,7 @@
             });
 
             function gotoPrevMonth(self) {
-                var isMonth2 = $(self).parents('table').hasClass('month2');
+                var isMonth2 = $(self).parents('.js-month').hasClass('month2');
                 var month = isMonth2 ? opt.month2 : opt.month1;
                 month = prevMonth(month);
                 if (isMonth2 && compare_month(month, opt.month1) <= 0 || isMonthOutOfBounds(month)) return;
@@ -1335,7 +1336,6 @@
                 relatedTarget: box
             });
             showGap();
-            updateCalendarWidth();
             calcPosition();
         }
 
@@ -1371,15 +1371,6 @@
             } else {
                 return moment().toDate();
             }
-        }
-
-        function updateCalendarWidth() {
-            var gapMargin = box.find('.gap').css('margin-left');
-            if (gapMargin) gapMargin = parseInt(gapMargin);
-            var w1 = box.find('.month1').width();
-            var w2 = box.find('.gap').width() + (gapMargin ? gapMargin * 2 : 0);
-            var w3 = box.find('.month2').width();
-            box.find('.month-wrapper').width(w1 + w2 + w3);
         }
 
         function renderTime(name, date) {
@@ -1722,7 +1713,7 @@
         function dateChanged(date) {
             var value = date.val();
             var name = date.attr('name');
-            var type = date.parents('table').hasClass('month1') ? 'month1' : 'month2';
+            var type = date.parents('.js-month').hasClass('month1') ? 'month1' : 'month2';
             var oppositeType = type === 'month1' ? 'month2' : 'month1';
             var startDate = opt.startDate ? moment(opt.startDate) : false;
             var endDate = opt.endDate ? moment(opt.endDate) : false;
@@ -1981,7 +1972,7 @@
             var yearElement = generateYearElement(date, month);
 
             box.find('.' + month + ' .month-name').html(monthElement + ' ' + yearElement);
-            box.find('.' + month + ' tbody').html(createMonthHTML(date));
+            box.find('.' + month + ' .js-days').html(createMonthHTML(date));
             opt[month] = date;
             updateSelectableRange();
             bindEvents();
@@ -2139,13 +2130,10 @@
             var p = Math.abs(m1 - m2);
             var shouldShow = (p > 1 && p != 89);
             if (shouldShow) {
-                box.addClass('has-gap').removeClass('no-gap').find('.gap').css('visibility', 'visible');
+                box.addClass('has-gap').removeClass('no-gap');
             } else {
-                box.removeClass('has-gap').addClass('no-gap').find('.gap').css('visibility', 'hidden');
+                box.removeClass('has-gap').addClass('no-gap');
             }
-            var h1 = box.find('table.month1').height();
-            var h2 = box.find('table.month2').height();
-            box.find('.gap').height(Math.max(h1, h2) + 10);
         }
 
         function closeDatePicker() {
@@ -2215,6 +2203,10 @@
             if (opt.customTopBar) html += ' custom-topbar ';
             html += '">';
 
+	        if (opt.customHeader) {
+		        html += '<div class="custom-header js-custom-header' + opt.customHeader + '</div>';
+	        }
+
             if (opt.showTopbar) {
                 html += '<div class="drp_top-bar">';
 
@@ -2227,16 +2219,16 @@
                     if (!opt.singleDate) {
                         html += ' <span class="separator-day">' + opt.separator + '</span> <b class="end-day">...</b> <i class="selected-days">(<span class="selected-days-num">3</span> ' + translate('days') + ')</i>';
                     }
+                    //normal-top
                     html += '</div>';
-                    html += '<div class="error-top">error</div>' +
-                        '<div class="default-top">default</div>';
+                    html += '<div class="error-top">error</div><div class="default-top">default</div>';
                 }
 
                 html += '<input type="button" class="apply-btn disabled' + getApplyBtnClass() + '" value="' + translate('apply') + '" />';
+                //drp_top-bar
                 html += '</div>';
             }
 
-            var _colspan = opt.showWeekNumbers ? 6 : 5;
 
             var arrowPrev = '&lt;';
             if (opt.customArrowPrevSymbol) arrowPrev = opt.customArrowPrevSymbol;
@@ -2244,58 +2236,56 @@
             var arrowNext = '&gt;';
             if (opt.customArrowNextSymbol) arrowNext = opt.customArrowNextSymbol;
 
-            html += '<div class="month-wrapper">' +
-                '   <table class="month1" cellspacing="0" border="0" cellpadding="0">' +
-                '       <thead>' +
-                '           <tr class="caption">' +
-                '               <th>' +
-                '                   <span class="prev">' +
-                arrowPrev +
-                '                   </span>' +
-                '               </th>' +
-                '               <th colspan="' + _colspan + '" class="month-name">' +
-                '               </th>' +
-                '               <th>' +
-                (opt.singleDate || !opt.stickyMonths ? '<span class="next">' + arrowNext + '</span>' : '') +
-                '               </th>' +
-                '           </tr>' +
-                '           <tr class="week-name">' + getWeekHead() +
-                '       </thead>' +
-                '       <tbody></tbody>' +
-                '   </table>';
+	        html += '<div class="month-wrapper">' +
+		        '   <div class="month1 month js-month">'+
+		        '      <div class="month-content">' +
+		        '           <div class="month-head">' +
+		        '               <div class="month-caption">' +
+		        '                   <div class="month-arrow month-arrow--next">' +
+		        '                       <span class="prev">' + arrowPrev + '</span>' +
+		        '                   </div>' +
+		        '                   <div class="month-name"></div>' +
+		        '                   <div class="month-arrow month-arrow--next">' +
+		        (opt.singleDate || !opt.stickyMonths ? '<span class="next">' + arrowNext + '</span>' : '') +
+		        '                   </div>' +
+		        '               </div>' +
+		        '               <div class="week-name">' + getWeekHead() + '</div>' +
+		        '           </div>' +
+		        '           <div class="days-container js-days"></div>' +
+		        '       </div>' +
+		        '   </div>';
 
-            if (hasMonth2()) {
-                html += '<div class="gap">' + getGapHTML() + '</div>' +
-                    '<table class="month2" cellspacing="0" border="0" cellpadding="0">' +
-                    '   <thead>' +
-                    '   <tr class="caption">' +
-                    '       <th>' +
-                    (!opt.stickyMonths ? '<span class="prev">' + arrowPrev + '</span>' : '') +
-                    '       </th>' +
-                    '       <th colspan="' + _colspan + '" class="month-name">' +
-                    '       </th>' +
-                    '       <th>' +
-                    '           <span class="next">' + arrowNext + '</span>' +
-                    '       </th>' +
-                    '   </tr>' +
-                    '   <tr class="week-name">' + getWeekHead() +
-                    '   </thead>' +
-                    '   <tbody></tbody>' +
-                    '</table>';
+	        if (hasMonth2()) {
+		        html += '<div class="month-gap"></div>'+
+			        '<div class="month2 month js-month">'+
+			        '      <div class="month-content">' +
+			        '           <div class="month-head">' +
+			        '               <div class="month-caption">' +
+			        '                   <div class="month-arrow month-arrow--next">' +
+			        (!opt.stickyMonths ? '<span class="prev">' + arrowPrev + '</span>' : '') +
+			        '                   </div>' +
+			        '                   <div class="month-name"></div>' +
+			        '                   <div class="month-arrow month-arrow--next">' +
+			        '                       <span class="next">' + arrowNext + '</span>' +
+			        '                   </div>' +
+			        '               </div>' +
+			        '               <div class="week-name">' + getWeekHead() + '</div>' +
+			        '           </div>' +
+			        '           <div class="days-container js-days"></div>' +
+			        '       </div>' +
+			        '   </div>' +
+			        '</div>';
 
-            }
-            //+'</div>'
-            html += '<div class="dp-clearfix"></div>' +
-                '<div class="time">' +
-                '<div class="time1"></div>';
-            if (!opt.singleDate) {
-                html += '<div class="time2"></div>';
-            }
-            html += '</div>' +
-                '<div class="dp-clearfix"></div>' +
-                '</div>';
+	        }
+	        // +'</div>'
+	        html += '<div class="time"><div class="time1"></div>';
+	        if (!opt.singleDate) {
+		        html += '<div class="time2"></div>';
+	        }
+	        html += '</div>';
 
-            html += '<div class="footer">';
+
+	        if (opt.showShortcuts || opt.showCustomValues) html += '<div class="calendar-footer">';
             if (opt.showShortcuts) {
                 html += '<div class="shortcuts"><b>' + translate('shortcuts') + '</b>';
 
@@ -2360,9 +2350,17 @@
                         html += '&nbsp;<span class="custom-value"><a href="javascript:;" custom="' + val.value + '">' + val.name + '</a></span>';
                     }
                 }
+	            html += '</div>';
             }
+            //footer,
+	        if (opt.showShortcuts || opt.showCustomValues) html +='</div>';
 
-            html += '</div></div>';
+	        if (opt.customFooter) {
+		        html += '<div class="custom-footer js-custom-footer' + opt.customFooter + '</div>';
+	        }
+
+	        // date-picker-wrapper
+            html += '</div>';
 
 
             return $(html);
@@ -2379,26 +2377,26 @@
             return klass;
         }
 
-        function getWeekHead() {
-            var prepend = opt.showWeekNumbers ? '<th>' + translate('week-number') + '</th>' : '';
-            if (opt.startOfWeek == 'monday') {
-                return prepend + '<th>' + translate('week-1') + '</th>' +
-                    '<th>' + translate('week-2') + '</th>' +
-                    '<th>' + translate('week-3') + '</th>' +
-                    '<th>' + translate('week-4') + '</th>' +
-                    '<th>' + translate('week-5') + '</th>' +
-                    '<th>' + translate('week-6') + '</th>' +
-                    '<th>' + translate('week-7') + '</th>';
-            } else {
-                return prepend + '<th>' + translate('week-7') + '</th>' +
-                    '<th>' + translate('week-1') + '</th>' +
-                    '<th>' + translate('week-2') + '</th>' +
-                    '<th>' + translate('week-3') + '</th>' +
-                    '<th>' + translate('week-4') + '</th>' +
-                    '<th>' + translate('week-5') + '</th>' +
-                    '<th>' + translate('week-6') + '</th>';
-            }
-        }
+	    function getWeekHead() {
+		    var prepend = opt.showWeekNumbers ? '<div class="week-name__item week-number">' + translate('week-number') + '</div>' : '';
+		    if (opt.startOfWeek == 'monday') {
+			    return prepend + '<div class="week-name__item">' + translate('week-1') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-2') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-3') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-4') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-5') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-6') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-7') + '</div>';
+		    } else {
+			    return prepend + '<div class="week-name__item">' + translate('week-7') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-1') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-2') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-3') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-4') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-5') + '</div>' +
+				    '<div class="week-name__item">' + translate('week-6') + '</div>';
+		    }
+	    }
 
         function isMonthOutOfBounds(month) {
             month = moment(month);
@@ -2409,19 +2407,6 @@
                 return true;
             }
             return false;
-        }
-
-        function getGapHTML() {
-            var html = ['<div class="gap-top-mask"></div><div class="gap-bottom-mask"></div><div class="gap-lines">'];
-            for (var i = 0; i < 20; i++) {
-                html.push('<div class="gap-line">' +
-                    '<div class="gap-1"></div>' +
-                    '<div class="gap-2"></div>' +
-                    '<div class="gap-3"></div>' +
-                    '</div>');
-            }
-            html.push('</div>');
-            return html.join('');
         }
 
         function hasMonth2() {
@@ -2477,28 +2462,35 @@
                         type: 'lastMonth',
                         day: day.getDate(),
                         time: day.getTime(),
-                        valid: valid
+                        valid: valid,
+	                    extraWeek: false
                     });
                 }
             }
             var toMonth = d.getMonth();
             for (var i = 0; i < 40; i++) {
-                today = moment(d).add(i, 'days').toDate();
+	            today = moment(d).add(i, 'days').toDate();
+	            var todayDayOfWeek = today.getDay();
+	            var extraWeek = false;
                 valid = isValidTime(today.getTime());
                 if (opt.startDate && compare_day(today, opt.startDate) < 0) valid = false;
                 if (opt.endDate && compare_day(today, opt.endDate) > 0) valid = false;
-                days.push({
+	            if ((today.getMonth() !== toMonth) && (opt.startOfWeek === 'monday') && (todayDayOfWeek === 1) ) extraWeek = true;
+
+	            days.push({
                     date: today,
                     type: today.getMonth() == toMonth ? 'toMonth' : 'nextMonth',
                     day: today.getDate(),
                     time: today.getTime(),
-                    valid: valid
+                    valid: valid,
+	                extraWeek: extraWeek
                 });
             }
             var html = [];
             for (var week = 0; week < 6; week++) {
-                if (days[week * 7].type == 'nextMonth') break;
-                html.push('<tr>');
+	            if ((days[week * 7].type == 'nextMonth') || (week === 5 && days[36].extraWeek)) break;
+	            // if ((days[week * 7].type == 'nextMonth')) break;
+	            html.push('<div class="days-row">');
 
                 for (var day = 0; day < 7; day++) {
                     var _day = (opt.startOfWeek == 'monday') ? day + 1 : day;
@@ -2519,14 +2511,17 @@
                         'data-tooltip': today.tooltip,
                         'class': 'day ' + today.type + ' ' + today.extraClass + ' ' + (today.valid ? 'valid' : 'invalid') + ' ' + (highlightToday ? 'real-today' : '')
                     };
+	                var todayTdAttr = {
+		                'class': 'day-text ' + 'is-' + today.type
+	                };
 
                     if (day === 0 && opt.showWeekNumbers) {
-                        html.push('<td><div class="week-number" data-start-time="' + today.time + '">' + opt.getWeekNumber(today.date) + '</div></td>');
+                        html.push('<div><div class="week-number" data-start-time="' + today.time + '">' + opt.getWeekNumber(today.date) + '</div></div>');
                     }
 
-                    html.push('<td ' + attributesCallbacks({}, opt.dayTdAttrs, today) + '><div ' + attributesCallbacks(todayDivAttr, opt.dayDivAttrs, today) + '>' + showDayHTML(today.time, today.day) + '</div></td>');
+                    html.push('<div ' + attributesCallbacks(todayDivAttr, opt.dayDivAttrs, today) + '><div ' + attributesCallbacks(todayTdAttr, opt.dayTdAttrs, today) + '>' + showDayHTML(today.time, today.day) + '</div></div>');
                 }
-                html.push('</tr>');
+                html.push('</div>');
             }
             return html.join('');
         }
