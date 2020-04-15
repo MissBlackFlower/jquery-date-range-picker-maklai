@@ -135,6 +135,12 @@
 .date-picker-wrapper .month-caption .prev {
   padding: 0 5px;
   cursor: pointer;
+  opacity: 1;
+}
+
+.date-picker-wrapper .month-caption .next.is-disabled,
+.date-picker-wrapper .month-caption .prev.is-disabled {
+  opacity: 0.5;
 }
 
 .date-picker-wrapper .month-arrow {

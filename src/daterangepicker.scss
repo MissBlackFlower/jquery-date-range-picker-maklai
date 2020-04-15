@@ -108,6 +108,10 @@
 			.prev {
 				padding: 0 5px;
 				cursor: pointer;
+				opacity: 1;
+				&.is-disabled {
+					opacity: 0.5;
+				}
 			}
 		}
 		&-arrow {

@@ -1977,20 +1977,31 @@
             updateSelectableRange();
             bindEvents();
         }
+		//TODO: fix invalid date
+		function disableMonthBtn(date, month) {
+        	var arrow, monthNumber;
+
+			box.find('.' + month + ' .next').removeClass('is-disabled');
+			box.find('.' + month + ' .prev').removeClass('is-disabled');
+			console.log(moment(date).add(1, 'months'), moment(date).get('month') );
+
+			if (month === 'month1') {
+				arrow = box.find('.' + month + ' .prev');
+				monthNumber = moment(date).add(1, 'months').get('month');
+			} else {
+				arrow = box.find('.' + month + ' .next');
+				monthNumber = moment(date).subtract(1, 'months').get('month');
+			}
+			if (isMonthOutOfBounds(monthNumber)) {
+				arrow.addClass('is-disabled');
+			}
+		}
 
         function generateMonthElement(date, month) {
             date = moment(date);
             var currentMonth = date.get('month');
             var currentMonthName = nameMonth(currentMonth);
             var nonSelectableMonth = '<div class="month-element">' + currentMonthName + '</div>';
-	        var monthPrev = date.add(1, 'months').get('month');
-	        var monthNext = date.subtract(1, 'months').get('month');
-	        if (isMonthOutOfBounds(monthPrev) && month === 'month1') {
-		        box.find('.' + month + ' .prev').addClass('is-disabled')
-	        }
-	        if (isMonthOutOfBounds(monthNext) && month === 'month2') {
-		        box.find('.' + month + ' .next').addClass('is-disabled')
-	        }
 
             if (!opt.monthSelect) { return nonSelectableMonth; }
 
