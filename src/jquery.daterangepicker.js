@@ -1185,6 +1185,7 @@
                 opt.start = false;
                 opt.end = false;
                 box.find('.js-day.checked').removeClass('checked');
+                box.find('.js-day-wrapper.is-checked').removeClass('is-checked');
                 opt.setValue.call(selfDom, valueName);
                 checkSelectionValid();
                 showSelectedInfo(true);
@@ -1429,8 +1430,11 @@
             opt.start = false;
             opt.end = false;
             box.find('.js-day.checked').removeClass('checked');
+            box.find('.js-day-wrapper.is-checked').removeClass('is-checked');
             box.find('.js-day.last-date-selected').removeClass('last-date-selected');
+            box.find('.js-day-wrapper.is-last-date-selected').removeClass('is-last-date-selected');
             box.find('.js-day.first-date-selected').removeClass('first-date-selected');
+            box.find('.js-day-wrapper.is-first-date-selected').removeClass('is-first-date-selected');
             opt.setValue.call(selfDom, '');
             checkSelectionValid();
             showSelectedInfo();
@@ -1470,6 +1474,7 @@
             if (day.hasClass('invalid')) return;
             var time = day.attr('time');
             day.addClass('checked');
+            day.closest('.js-day-wrapper').addClass('is-checked');
             if (opt.singleDate) {
                 opt.start = time;
                 opt.end = false;
@@ -1624,7 +1629,8 @@
             } else if (!day.hasClass('invalid')) {
                 if (opt.singleDate) {
                     box.find('.js-day.hovering').removeClass('hovering');
-                    day.addClass('hovering');
+                    box.find('.js-day-wrapper.is-hovering').removeClass('is-hovering');
+                    day.addClass('hovering').closest('.js-day-wrapper').addClass('is-hovering');
                 } else {
                     box.find('.js-day').each(function() {
                         var time = parseInt($(this).attr('time')),
@@ -1632,9 +1638,9 @@
                             end = opt.end;
 
                         if (time == hoverTime) {
-                            $(this).addClass('hovering');
+                            $(this).addClass('hovering').closest('.js-day-wrapper').addClass('is-hovering');
                         } else {
-                            $(this).removeClass('hovering');
+                            $(this).removeClass('hovering').closest('.js-day-wrapper').removeClass('is-hovering');
                         }
 
                         if (
@@ -1644,12 +1650,12 @@
                                 (opt.start > time && hoverTime <= time)
                             )
                         ) {
-                            $(this).addClass('hovering');
+                            $(this).addClass('hovering').closest('.js-day-wrapper').addClass('is-hovering');
 	                        if (opt.start > time && hoverTime <= time) {
 		                        selectedBefore = true;
 	                        }
                         } else {
-                            $(this).removeClass('hovering');
+                            $(this).removeClass('hovering').closest('.js-day-wrapper').removeClass('is-hovering');
                         }
                     });
 
@@ -1707,6 +1713,7 @@
 
         function clearHovering() {
             box.find('.js-day.hovering').removeClass('hovering');
+            box.find('.js-day-wrapper.is-hovering').removeClass('is-hovering');
             box.find('.date-range-length-tip').hide();
         }
 
@@ -1766,11 +1773,13 @@
                 opt.start = false;
                 opt.end = false;
                 box.find('.js-day').removeClass('checked');
+                box.find('.js-day-wrapper').removeClass('is-checked');
                 box.find('.drp_top-bar').removeClass('normal').addClass('error').find('.error-top').html(translate('less-than').replace('%d', opt.maxDays));
             } else if (opt.minDays && days < opt.minDays) {
                 opt.start = false;
                 opt.end = false;
                 box.find('.js-day').removeClass('checked');
+                box.find('.js-day-wrapper').removeClass('is-checked');
                 box.find('.drp_top-bar').removeClass('normal').addClass('error').find('.error-top').html(translate('more-than').replace('%d', opt.minDays));
             } else {
                 if (opt.start || opt.end)
@@ -1793,6 +1802,7 @@
                     opt.start = false;
                     opt.end = false;
                     box.find('.js-day').removeClass('checked');
+                    box.find('.js-day-wrapper').removeClass('is-checked');
                 }
             }
         }
@@ -1941,21 +1951,27 @@
                     (opt.start && !opt.end && moment(start).format('YYYY-MM-DD') == moment(time).format('YYYY-MM-DD'))
                 ) {
                     $(this).addClass('checked');
+                    $(this).closest('.js-day-wrapper').addClass('is-checked');
                 } else {
                     $(this).removeClass('checked');
+                    $(this).closest('.js-day-wrapper').removeClass('is-checked');
                 }
 
                 //add first-date-selected class name to the first date selected
                 if (opt.start && moment(start).format('YYYY-MM-DD') == moment(time).format('YYYY-MM-DD')) {
                     $(this).addClass('first-date-selected');
+                    $(this).closest('.js-day-wrapper').addClass('is-first-date-selected');
                 } else {
                     $(this).removeClass('first-date-selected');
+                    $(this).closest('.js-day-wrapper').removeClass('is-first-date-selected');
                 }
                 //add last-date-selected
                 if (opt.end && moment(end).format('YYYY-MM-DD') == moment(time).format('YYYY-MM-DD')) {
                     $(this).addClass('last-date-selected');
+                    $(this).closest('.js-day-wrapper').addClass('is-last-date-selected');
                 } else {
                     $(this).removeClass('last-date-selected');
+                    $(this).closest('.js-day-wrapper').removeClass('is-last-date-selected');
                 }
             });
 
@@ -2531,7 +2547,7 @@
                         'class': 'day-text js-day ' + today.type + ' ' + today.extraClass + ' ' + (today.valid ? 'valid' : 'invalid') + ' ' + (highlightToday ? 'real-today' : '')
                     };
 	                var todayTdAttr = {
-		                'class': 'day ' + 'is-' + today.type
+		                'class': 'day js-day-wrapper ' + 'is-' + today.type
 	                };
 
                     if (day === 0 && opt.showWeekNumbers) {
