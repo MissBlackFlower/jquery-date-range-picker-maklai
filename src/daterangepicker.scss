@@ -3,6 +3,7 @@
 	padding: 0;
 	margin: 0;
 }
+
 .date-picker-wrapper {
 	position: absolute;
 	z-index: 1;
@@ -113,7 +114,7 @@
 			width: 27px;
 		}
 		&-gap {
-			width: 20px;
+			width: 2px;
 			background: #999;
 		}
 		.week-name {
@@ -143,6 +144,11 @@
 		cursor: default;
 		width: 30px;
 		flex-shrink: 0;
+		&.is-lastMonth,
+		&.is-nextMonth {
+			pointer-events: none;
+			cursor: default;
+		}
 		.day-text {
 			padding: 5px 0;
 			width: 100%;
@@ -150,53 +156,37 @@
 			font-size: 12px;
 			color: #ccc;
 			text-align: center;
-		}
-		&.lastMonth, &.nextMonth {
-			pointer-events: none;
-			cursor: default;
-			.day-text {
+			&.lastMonth, &.nextMonth {
 				background: #fff !important;
 				color: #999 !important;
 			}
-		}
-		&.checked {
-			.day-text {
+			&.checked {
 				background-color: rgb(156, 219, 247);
 			}
-		}
-		&.has-tooltip {
-			cursor: help !important;
-			.tooltip {
-				white-space: nowrap;
+			&.has-tooltip {
+				cursor: help !important;
+				.tooltip {
+					white-space: nowrap;
+				}
 			}
-		}
-		&.toMonth {
-			&.valid {
-				cursor: pointer;
-				.day-text {
+			&.toMonth {
+				&.valid {
+					cursor: pointer;
 					color: #333;
 				}
-			}
-			&.hovering {
-				.day-text {
+				&.hovering {
 					background-color: #cdecfa;
 				}
-			}
-			&.first-date-selected,
-			&.last-date-selected {
-				.day-text {
-					background-color:rgb(68, 153, 238);
+				&.first-date-selected,
+				&.last-date-selected {
+					background-color: rgb(68, 153, 238);
 					color: white;
 				}
 			}
-		}
-		&.real-today {
-			.day-text {
+			&.real-today {
 				background-color: rgb(255, 230, 132);
-			}
 
-			&.checked, &.hovering {
-				.day-text {
+				&.checked, &.hovering {
 					background-color: rgb(112, 204, 213);
 				}
 			}
@@ -244,13 +234,12 @@
 			font-size: 12px;
 			border-radius: 4px;
 			cursor: pointer;
-			color: #d9eef7;
 			border: solid 1px #0076a3;
 			background: #0095cd;
 			background: -webkit-gradient(linear, left top, left bottom, from(#00adee), to(#0078a5));
 			background: -moz-linear-gradient(top, #00adee, #0078a5);
 			filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00adee', endColorstr='#0078a5');
-			color: white;
+			color: #fff;
 			line-height: initial;
 			&.disabled {
 				cursor: pointer;
@@ -274,10 +263,6 @@
 		border-radius: 2px;
 		font-size: 12px;
 		line-height: 16px;
-		-webkit-filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
-		-moz-filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
-		-ms-filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
-		-o-filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
 		filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
 		&:after {
 			content: '';

@@ -1184,7 +1184,7 @@
                 var valueName = $(this).attr('custom');
                 opt.start = false;
                 opt.end = false;
-                box.find('.day.checked').removeClass('checked');
+                box.find('.js-day.checked').removeClass('checked');
                 opt.setValue.call(selfDom, valueName);
                 checkSelectionValid();
                 showSelectedInfo(true);
@@ -1428,9 +1428,9 @@
         function clearSelection() {
             opt.start = false;
             opt.end = false;
-            box.find('.day.checked').removeClass('checked');
-            box.find('.day.last-date-selected').removeClass('last-date-selected');
-            box.find('.day.first-date-selected').removeClass('first-date-selected');
+            box.find('.js-day.checked').removeClass('checked');
+            box.find('.js-day.last-date-selected').removeClass('last-date-selected');
+            box.find('.js-day.first-date-selected').removeClass('first-date-selected');
             opt.setValue.call(selfDom, '');
             checkSelectionValid();
             showSelectedInfo();
@@ -1599,9 +1599,9 @@
 
 
         function updateSelectableRange() {
-            box.find('.day.invalid.tmp').removeClass('tmp invalid').addClass('valid');
+            box.find('.js-day.invalid.tmp').removeClass('tmp invalid').addClass('valid');
             if (opt.start && !opt.end) {
-                box.find('.day.toMonth.valid').each(function() {
+                box.find('.js-day.toMonth.valid').each(function() {
                     var time = parseInt($(this).attr('time'), 10);
                     if (!isValidTime(time))
                         $(this).addClass('invalid tmp').removeClass('valid');
@@ -1623,10 +1623,10 @@
                 tooltip = '<span class="tooltip-content">' + day.attr('data-tooltip') + '</span>';
             } else if (!day.hasClass('invalid')) {
                 if (opt.singleDate) {
-                    box.find('.day.hovering').removeClass('hovering');
+                    box.find('.js-day.hovering').removeClass('hovering');
                     day.addClass('hovering');
                 } else {
-                    box.find('.day').each(function() {
+                    box.find('.js-day').each(function() {
                         var time = parseInt($(this).attr('time')),
                             start = opt.start,
                             end = opt.end;
@@ -1706,7 +1706,7 @@
         }
 
         function clearHovering() {
-            box.find('.day.hovering').removeClass('hovering');
+            box.find('.js-day.hovering').removeClass('hovering');
             box.find('.date-range-length-tip').hide();
         }
 
@@ -1765,12 +1765,12 @@
             } else if (opt.maxDays && days > opt.maxDays) {
                 opt.start = false;
                 opt.end = false;
-                box.find('.day').removeClass('checked');
+                box.find('.js-day').removeClass('checked');
                 box.find('.drp_top-bar').removeClass('normal').addClass('error').find('.error-top').html(translate('less-than').replace('%d', opt.maxDays));
             } else if (opt.minDays && days < opt.minDays) {
                 opt.start = false;
                 opt.end = false;
-                box.find('.day').removeClass('checked');
+                box.find('.js-day').removeClass('checked');
                 box.find('.drp_top-bar').removeClass('normal').addClass('error').find('.error-top').html(translate('more-than').replace('%d', opt.minDays));
             } else {
                 if (opt.start || opt.end)
@@ -1792,7 +1792,7 @@
                 ) {
                     opt.start = false;
                     opt.end = false;
-                    box.find('.day').removeClass('checked');
+                    box.find('.js-day').removeClass('checked');
                 }
             }
         }
@@ -1927,7 +1927,7 @@
 
         function showSelectedDays() {
             if (!opt.start && !opt.end) return;
-            box.find('.day').each(function() {
+            box.find('.js-day').each(function() {
                 var time = parseInt($(this).attr('time')),
                     start = opt.start,
                     end = opt.end;
@@ -1983,6 +1983,14 @@
             var currentMonth = date.get('month');
             var currentMonthName = nameMonth(currentMonth);
             var nonSelectableMonth = '<div class="month-element">' + currentMonthName + '</div>';
+	        var monthPrev = date.add(1, 'months').get('month');
+	        var monthNext = date.subtract(1, 'months').get('month');
+	        if (isMonthOutOfBounds(monthPrev) && month === 'month1') {
+		        box.find('.' + month + ' .prev').addClass('is-disabled')
+	        }
+	        if (isMonthOutOfBounds(monthNext) && month === 'month2') {
+		        box.find('.' + month + ' .next').addClass('is-disabled')
+	        }
 
             if (!opt.monthSelect) { return nonSelectableMonth; }
 
@@ -2079,15 +2087,15 @@
         }
 
         function bindEvents() {
-            box.find('.day').off("click").click(function(evt) {
+            box.find('.js-day').off("click").click(function(evt) {
                 dayClicked($(this));
             });
 
-            box.find('.day').off("mouseenter").mouseenter(function(evt) {
+            box.find('.js-day').off("mouseenter").mouseenter(function(evt) {
                 dayHovering($(this));
             });
 
-            box.find('.day').off("mouseleave").mouseleave(function(evt) {
+            box.find('.js-day').off("mouseleave").mouseleave(function(evt) {
                 box.find('.date-range-length-tip').hide();
                 if (opt.singleDate) {
                     clearHovering();
@@ -2509,17 +2517,17 @@
                     var todayDivAttr = {
                         time: today.time,
                         'data-tooltip': today.tooltip,
-                        'class': 'day ' + today.type + ' ' + today.extraClass + ' ' + (today.valid ? 'valid' : 'invalid') + ' ' + (highlightToday ? 'real-today' : '')
+                        'class': 'day-text js-day ' + today.type + ' ' + today.extraClass + ' ' + (today.valid ? 'valid' : 'invalid') + ' ' + (highlightToday ? 'real-today' : '')
                     };
 	                var todayTdAttr = {
-		                'class': 'day-text ' + 'is-' + today.type
+		                'class': 'day ' + 'is-' + today.type
 	                };
 
                     if (day === 0 && opt.showWeekNumbers) {
                         html.push('<div><div class="week-number" data-start-time="' + today.time + '">' + opt.getWeekNumber(today.date) + '</div></div>');
                     }
 
-                    html.push('<div ' + attributesCallbacks(todayDivAttr, opt.dayDivAttrs, today) + '><div ' + attributesCallbacks(todayTdAttr, opt.dayTdAttrs, today) + '>' + showDayHTML(today.time, today.day) + '</div></div>');
+                    html.push('<div ' + attributesCallbacks(todayTdAttr, opt.dayTdAttrs, today) + '><div ' + attributesCallbacks(todayDivAttr, opt.dayDivAttrs, today) + '>' + showDayHTML(today.time, today.day) + '</div></div>');
                 }
                 html.push('</div>');
             }

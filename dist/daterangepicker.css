@@ -142,7 +142,7 @@
 }
 
 .date-picker-wrapper .month-gap {
-  width: 20px;
+  width: 2px;
   background: #999;
 }
 
@@ -192,6 +192,11 @@
       flex-shrink: 0;
 }
 
+.date-picker-wrapper .day.is-lastMonth, .date-picker-wrapper .day.is-nextMonth {
+  pointer-events: none;
+  cursor: default;
+}
+
 .date-picker-wrapper .day .day-text {
   padding: 5px 0;
   width: 100%;
@@ -201,50 +206,42 @@
   text-align: center;
 }
 
-.date-picker-wrapper .day.lastMonth, .date-picker-wrapper .day.nextMonth {
-  pointer-events: none;
-  cursor: default;
-}
-
-.date-picker-wrapper .day.lastMonth .day-text, .date-picker-wrapper .day.nextMonth .day-text {
+.date-picker-wrapper .day .day-text.lastMonth, .date-picker-wrapper .day .day-text.nextMonth {
   background: #fff !important;
   color: #999 !important;
 }
 
-.date-picker-wrapper .day.checked .day-text {
+.date-picker-wrapper .day .day-text.checked {
   background-color: #9cdbf7;
 }
 
-.date-picker-wrapper .day.has-tooltip {
+.date-picker-wrapper .day .day-text.has-tooltip {
   cursor: help !important;
 }
 
-.date-picker-wrapper .day.has-tooltip .tooltip {
+.date-picker-wrapper .day .day-text.has-tooltip .tooltip {
   white-space: nowrap;
 }
 
-.date-picker-wrapper .day.toMonth.valid {
+.date-picker-wrapper .day .day-text.toMonth.valid {
   cursor: pointer;
-}
-
-.date-picker-wrapper .day.toMonth.valid .day-text {
   color: #333;
 }
 
-.date-picker-wrapper .day.toMonth.hovering .day-text {
+.date-picker-wrapper .day .day-text.toMonth.hovering {
   background-color: #cdecfa;
 }
 
-.date-picker-wrapper .day.toMonth.first-date-selected .day-text, .date-picker-wrapper .day.toMonth.last-date-selected .day-text {
+.date-picker-wrapper .day .day-text.toMonth.first-date-selected, .date-picker-wrapper .day .day-text.toMonth.last-date-selected {
   background-color: #4499ee;
   color: white;
 }
 
-.date-picker-wrapper .day.real-today .day-text {
+.date-picker-wrapper .day .day-text.real-today {
   background-color: #ffe684;
 }
 
-.date-picker-wrapper .day.real-today.checked .day-text, .date-picker-wrapper .day.real-today.hovering .day-text {
+.date-picker-wrapper .day .day-text.real-today.checked, .date-picker-wrapper .day .day-text.real-today.hovering {
   background-color: #70ccd5;
 }
 
@@ -296,12 +293,11 @@
   font-size: 12px;
   border-radius: 4px;
   cursor: pointer;
-  color: #d9eef7;
   border: solid 1px #0076a3;
   background: #0095cd;
   background: -moz-linear-gradient(top, #00adee, #0078a5);
   filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#00adee', endColorstr='#0078a5');
-  color: white;
+  color: #fff;
   line-height: initial;
 }
 
@@ -327,10 +323,7 @@
   font-size: 12px;
   line-height: 16px;
   -webkit-filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
-  -moz-filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
-  -ms-filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
-  -o-filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
-  filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
+          filter: drop-shadow(0 0 3px rgba(0, 0, 0, 0.3));
 }
 
 .date-picker-wrapper .date-range-length-tip:after {
